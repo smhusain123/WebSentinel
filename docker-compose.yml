@@ -1,0 +1,26 @@
+services:
+  redis:
+    image: redis:latest
+    container_name: websentinel-redis
+    ports:
+      - "6379:6379"
+
+  backend:
+    build: ./backend
+    container_name: websentinel-backend
+    ports:
+      - "5000:5000"
+    env_file:
+      - ./backend/.env
+    environment:
+      REDIS_URL: redis://redis:6379
+    depends_on:
+      - redis
+
+  frontend:
+    build: ./frontend
+    container_name: websentinel-frontend
+    ports:
+      - "3001:80"
+    depends_on:
+      - backend
